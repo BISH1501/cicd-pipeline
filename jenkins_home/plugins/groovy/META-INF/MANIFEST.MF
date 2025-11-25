@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Created-By: Maven Archiver 3.6.0
+Build-Jdk-Spec: 17
+Specification-Title: Groovy
+Specification-Version: 0.0
+Implementation-Title: Groovy
+Implementation-Version: 497.v7b_061a_a_de65d
+Group-Id: org.jenkins-ci.plugins
+Artifact-Id: groovy
+Short-Name: groovy
+Long-Name: Groovy
+Url: https://github.com/jenkinsci/groovy-plugin
+Compatible-Since-Version: 2.0
+Plugin-Version: 497.v7b_061a_a_de65d
+Hudson-Version: 2.479.1
+Jenkins-Version: 2.479.1
+Plugin-Dependencies: pipeline-groovy-lib:745.vdf6077913de0;resolution:=o
+ ptional,workflow-step-api:678.v3ee58b_469476,script-security:1369.v9b_9
+ 8a_4e95b_2d,structs:338.v848422169819,token-macro:400.v35420b_922dcb_;r
+ esolution:=optional
+Plugin-Developers: 
+Plugin-ScmConnection: scm:git:https://github.com/jenkinsci/groovy-plugin
+Plugin-ScmTag: 7b061aade65da5400e7002ed2432c6f994ba654c
+Plugin-ScmUrl: https://github.com/jenkinsci/groovy-plugin
+Implementation-Build: 7b061aade65da5400e7002ed2432c6f994ba654c
+
