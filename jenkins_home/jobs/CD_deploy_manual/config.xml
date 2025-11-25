@@ -1,0 +1,64 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1559.va_a_533730b_ea_d">
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@4218.vff679a_5c0f3a_">
+    <script>pipeline {
+  agent any
+  parameters {
+    choice(name: &apos;ENV&apos;, choices: [&apos;main&apos;,&apos;dev&apos;], description: &apos;Вибери середовище для деплою&apos;)
+    string(name: &apos;IMAGE_TAG&apos;, defaultValue: &apos;&apos;, description: &apos;Опціонально: вкажи образ&apos;)
+  }
+  environment {
+    DOCKER_CRED_ID = &apos;dockerhub-creds&apos;
+    DOCKER_REGISTRY = &apos;docker.io/bish1501&apos;
+  }
+  stages {
+
+    stage(&apos;Setup&apos;) {
+      steps {
+        script {
+          BRANCH = params.ENV
+          APP_PORT = (BRANCH == &apos;main&apos;) ? &apos;3000&apos; : &apos;3001&apos;
+          IMAGE = params.IMAGE_TAG ?: (BRANCH == &apos;main&apos; ? &apos;nodemain:v1.0&apos; : &apos;nodedev:v1.0&apos;)
+          CONTAINER_NAME = (BRANCH == &apos;main&apos;) ? &apos;nodemain_container&apos; : &apos;nodedev_container&apos;
+        }
+      }
+    }
+
+    stage(&apos;Pull image&apos;) {
+      steps {
+        script {
+          if (params.IMAGE_TAG) {
+            sh &quot;docker pull ${params.IMAGE_TAG} || true&quot;
+          } else {
+            echo &quot;Працюю з локальним образом ${IMAGE}&quot;
+          }
+        }
+      }
+    }
+
+    stage(&apos;Deploy&apos;) {
+      steps {
+        script {
+          sh &quot;&quot;&quot;
+            if docker ps -a --format &apos;{{.Names}}&apos; | grep -q &apos;${CONTAINER_NAME}&apos;; then
+              docker rm -f $(docker ps -a --filter &quot;name=${CONTAINER_NAME}&quot; -q) || true
+            fi
+
+            docker run -d --name ${CONTAINER_NAME} -p ${APP_PORT}:${APP_PORT} ${IMAGE}
+          &quot;&quot;&quot;
+        }
+      }
+    }
+
+  }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

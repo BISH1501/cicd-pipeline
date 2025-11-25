@@ -1,0 +1,36 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1559.va_a_533730b_ea_d">
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@4218.vff679a_5c0f3a_">
+    <script>pipeline {
+  agent any
+  parameters {
+    string(name: &apos;IMAGE&apos;, defaultValue: &apos;docker.io/bish1501/nodemain:v1.0&apos;, description: &apos;&apos;)
+  }
+  stages {
+    stage(&apos;Deploy main&apos;) {
+      steps {
+        script {
+          DEF_IMAGE = params.IMAGE
+          CONTAINER_NAME = &apos;nodemain_container&apos;
+          APP_PORT = &apos;3001&apos;
+          sh &quot;&quot;&quot;
+            docker pull ${DEF_IMAGE} || true
+            if docker ps -a --format &apos;{{.Names}}&apos; | grep -q &apos;${CONTAINER_NAME}&apos;; then
+              docker rm -f $(docker ps -a --filter &quot;name=${CONTAINER_NAME}&quot; -q) || true
+            fi
+            docker run -d --name ${CONTAINER_NAME} -p ${APP_PORT}:${APP_PORT} ${DEF_IMAGE}
+          &quot;&quot;&quot;
+        }
+      }
+    }
+  }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
